@@ -11,6 +11,8 @@ __pycache__
 
 # Other generated files
 */version.py
+htmlcov
+.coverage
 
 # Sphinx
 _build
@@ -32,3 +34,6 @@ distribute-*.tar.gz
 # Other
 .*.swp
 *~
+
+# Mac OSX
+.DS_Store
