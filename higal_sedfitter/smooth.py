@@ -34,7 +34,7 @@ def smooth_images_toresolution(target_resolution,
 
     Parameters
     ----------
-    target_resolution : `~astropy.units.Quantity`
+    target_resolution : `~astropy.units.quantity.Quantity`
         A degree-equivalent value that specifies the beam size in the output
         image
     globs : list
@@ -111,7 +111,7 @@ def smooth_image_toresolution(fn, outfn, target_resolution, clobber=False,
     ----------
     fn : str
     outfn : str
-    target_resolution : `~astropy.units.Quantity`
+    target_resolution : `~astropy.units.quantity.Quantity`
         A degree-equivalent value that specifies the beam size in the output
         image
     verbose : bool

@@ -68,12 +68,12 @@ class PixelFitter(object):
 
         Parameters
         ----------
-        frequency : `~astropy.units.Quantity`
+        frequency : `~astropy.units.quantity.Quantity`
             An array of frequencies to be converted to Hz and passed to the
             fitter
-        flux : `~astropy.units.Quantity`
+        flux : `~astropy.units.quantity.Quantity`
             An array of `u.MJy` equivalent flux values
-        err : `~astropy.units.Quantity`
+        err : `~astropy.units.quantity.Quantity`
             An array of `u.MJy` equivalent flux values that specify the errors
             on flux
         """
@@ -97,7 +97,7 @@ class PixelFitter(object):
 
         Parameters
         ----------
-        fmin, fmax : `~astropy.units.Quantity`
+        fmin, fmax : `~astropy.units.quantity.Quantity`
             Frequency-equivalent start and end points for the integral
         """
         integrator = dust_emissivity.blackbody.integrate_sed
