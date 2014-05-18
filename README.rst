@@ -37,7 +37,7 @@ version of the SED fitter looping routine (``fit_modified_blackbody_tofiles``)
 and performed most of the initial testing.
 
 
-.. _FITS_tools: fits-tools.rtfd.org
-.. _lmfit: lmfit.github.io/lmfit-py/
+.. _FITS_tools: http://fits-tools.rtfd.org
+.. _lmfit: http://lmfit.github.io/lmfit-py/
 .. _dust_emissivity: https://github.com/keflavich/dust_emissivity
-.. _readthedocs: hi-gal-sed-fitter.rtfd.org
+.. _readthedocs: http://hi-gal-sed-fitter.rtfd.org
