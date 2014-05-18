@@ -1,5 +1,6 @@
 from __future__ import print_function
 import os
+import glob
 
 import numpy as np
 from astropy.io import fits
@@ -7,7 +8,7 @@ from astropy import units as u
 from astropy.utils.console import ProgressBar
 import dust_emissivity
 
-from higal_beams import name_to_um
+import higal_beams
 
 class PixelFitter(object):
     
@@ -107,6 +108,7 @@ class PixelFitter(object):
 def fit_modified_blackbody_tofiles(filename_template,
                                    wavelengths=[70,160,250,350,500],
                                    bad_value=0,
+                                   name_to_um=higal_beams.name_to_um,
                                    **kwargs
                                    ):
     """
@@ -120,12 +122,18 @@ def fit_modified_blackbody_tofiles(filename_template,
             ``destripe_l000_{0}_reg.fits``
         would format to
             ``destripe_l000_PMW_reg.fits``
+        Wildcards are allowed, so you can also do
+            ``HIGAL*_{0}_RM_smregrid45.fits``
     wavelengths : list
         The wavelengths, in microns, to include in the fit
     bad_value : float
         A value to mark as bad and ignore.  Some files have NaNs indicating bad
         points, others have zeros - this is to account for bad pixels that have
         values of zero
+    name_to_um : dict
+        A dictionary identifying the translation between the string that will
+        be inserted into the file template and the wavelength.  There are two
+        built in: `higal_beams.name_to_um` and `higal_beams.num_to_um`.
     kwargs : dict
         passed to `fit_modified_blackbody_toimagecube`
     """
@@ -134,9 +142,13 @@ def fit_modified_blackbody_tofiles(filename_template,
                     for x in name_to_um}
     wavelengths_sorted = sorted(wavelengths)
 
-    for v in target_files.values():
-        if not os.path.exists(v):
-            raise IOError("File {0} does not exist".format(v))
+    for k in target_files:
+        if not os.path.exists(target_files[k]):
+            G = glob.glob(target_files[k])
+            if len(G) == 1:
+                target_files[k] = G[0]
+            else:
+                raise IOError("File {0} does not exist".format(target_files[k]))
 
     # Make an image cube appropriately sorted by wavelength
     image_cube = np.array([fits.getdata(target_files[wl])
