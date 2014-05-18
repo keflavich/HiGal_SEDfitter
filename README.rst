@@ -40,4 +40,4 @@ and performed most of the initial testing.
 .. _FITS_tools: fits-tools.rtfd.org
 .. _lmfit: lmfit.github.io/lmfit-py/
 .. _dust_emissivity: https://github.com/keflavich/dust_emissivity
-.. _readthedocs: higal_sedfitter.rtfd.org
+.. _readthedocs: hi-gal-sed-fitter.rtfd.org
