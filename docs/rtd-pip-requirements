@@ -1,3 +1,5 @@
 numpy
 Cython
 -e git+http://github.com/astropy/astropy.git#egg=astropy
+-e git+http://github.com/keflavich/dust_emissivity.git
+-e git+http://github.com/keflavich/FITS_tools.git
