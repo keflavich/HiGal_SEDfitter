@@ -174,8 +174,10 @@ def add_beam_information_to_higal_header(fn, clobber=True):
     header.
 
     The beams are assumed to be symmetric using the larger of the two beam axes
-    given in Traficante et al 2011.  This is not a valid assumption in general,
-    but without knowing the scan position angle you can't really do better.
+    given in `Traficante et al 2011
+    <http://adsabs.harvard.edu/abs/2011MNRAS.416.2932T>`_.  This is not a valid
+    assumption in general, but without knowing the scan position angle you
+    can't really do better.
 
     Parameters
     ----------
