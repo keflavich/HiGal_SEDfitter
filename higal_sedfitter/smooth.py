@@ -15,6 +15,10 @@ from higal_beams import name_to_um, beams
 
 FWHM_TO_SIGMA = 1./np.sqrt(8*np.log(2))
 
+__all__ = ['smooth_images_toresolution',
+           'smooth_image_toresolution',
+           'add_beam_information_to_higal_header']
+
 def smooth_images_toresolution(target_resolution,
                                globs=["destripe*P[LMS]W*fits",
                                       "destripe*blue*fits",

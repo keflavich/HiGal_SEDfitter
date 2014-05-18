@@ -10,6 +10,10 @@ import dust_emissivity
 
 import higal_beams
 
+__all__ = ['PixelFitter',
+           'fit_modified_blackbody_tofiles',
+           'fit_modified_blackbody_to_imagecube']
+
 class PixelFitter(object):
     
     def __init__(self, tguess=20, bguess=1.75, nguess=1e22,
@@ -166,7 +170,7 @@ def fit_modified_blackbody_to_imagecube(image_cube,
                                         outheader,
                                         wavelengths=[70,160,250,350,500],
                                         error_scaling=0.2,
-                                        pixelfitter=PixelFitter(), ncores=4,
+                                        pixelfitter=None, ncores=4,
                                         clobber=True,
                                         integral=False, out_prefix="",):
     """
@@ -182,9 +186,9 @@ def fit_modified_blackbody_to_imagecube(image_cube,
         The wavelengths, in microns, to include in the fit
     error_scaling : float or None
         The amount to scale the input fluxes by to determine the errors
-    pixelfitter : :class:`PixelFitter`
+    pixelfitter : :class:`PixelFitter` or None
         An instance of the :class:`PixelFitter` class to use for the fitting
-        (this is how guesses are specified)
+        (this is how guesses are specified).  If None, will use defaults.
     ncores : int
         OPTIONAL / NOT PRESENTLY IMPLEMENTED
         Allows parallelization
@@ -208,6 +212,9 @@ def fit_modified_blackbody_to_imagecube(image_cube,
         (optional) An HDU containing an image of the integral
         in :math:`erg/s/cm^2`
     """
+
+    if pixelfitter is None:
+        pixelfitter = PixelFitter()
 
     wavelengths_sorted = sorted(wavelengths)
 
