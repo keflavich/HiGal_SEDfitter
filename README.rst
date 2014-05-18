@@ -3,7 +3,7 @@ Hi-Gal SED fitter
 =================
 
 Docs to come.  All the good stuff happens in `fits.py
-<higal_sedfitter/fits.py>` and `smooth.py <higal_sedfitter/smooth.py>`.
+<higal_sedfitter/fits.py>`_ and `smooth.py <higal_sedfitter/smooth.py>`_.
 
 
 Requires
