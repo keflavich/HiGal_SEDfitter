@@ -3,3 +3,4 @@ Cython
 -e git+http://github.com/astropy/astropy.git#egg=astropy
 -e git+http://github.com/keflavich/dust_emissivity.git#egg=dust_emissivity
 -e git+http://github.com/keflavich/FITS_tools.git#egg=FITS_tools
+-e git+http://github.com/lmfit/lmfit-py.git#egg=lmfit
