@@ -15,17 +15,14 @@ from higal_beams import name_to_um, beams
 
 FWHM_TO_SIGMA = 1./np.sqrt(8*np.log(2))
 
-def smooth_images(target_resolution, globs=["destripe*P[LMS]W*fits",
-                                            "destripe*blue*fits",
-                                            "destripe*red*fits"],
-                  reject_regex='smooth|smregrid',
-                  verbose=True,
-                  skip_existing=True,
-                  regrid=True,
-                  target_header=None,
-                  regrid_order=1,
-                  clobber=False,
-                  **kwargs):
+def smooth_images_toresolution(target_resolution,
+                               globs=["destripe*P[LMS]W*fits",
+                                      "destripe*blue*fits",
+                                      "destripe*red*fits"],
+                               reject_regex='smooth|smregrid', verbose=True,
+                               skip_existing=True, regrid=True,
+                               target_header=None, regrid_order=1,
+                               clobber=False, **kwargs):
     """
     Smooth a series of images to the same resolution.  The output files will be
     of the form ``{inputfilename}_smooth.fits`` and
@@ -54,11 +51,12 @@ def smooth_images(target_resolution, globs=["destripe*P[LMS]W*fits",
     regrid_order : int
         The order of the regridding operation.  Regridding is performed with
         interpolation, so 0'th order means nearest-neighbor and 1st order means
-        bilinear.
+        bilinear.  Regridding is done with
+        `FITS_tools.hcongrid.hcongrid`
     clobber : bool
         Overwrite files if they exist?
     kwargs : dict
-        Passed to `smooth_image`
+        Passed to `smooth_image_toresolution`
 
     Raises
     ------
