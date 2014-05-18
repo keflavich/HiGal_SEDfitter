@@ -46,7 +46,7 @@ class Mock(object):
         else:
             return Mock()
 
-MOCK_MODULES = ['dust_emissivity','FITS_tools','lmfit']
+MOCK_MODULES = ['dust_emissivity','FITS_tools','lmfit','scipy']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
 
