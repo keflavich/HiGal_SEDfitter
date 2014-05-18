@@ -8,11 +8,8 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 from astropy import convolution
-from astropy.utils.console import ProgressBar
 import FITS_tools.header_tools as FITS_header_tools
 from FITS_tools.hcongrid import hcongrid
-import FITS_tools
-import dust_emissivity
 
 from higal_beams import name_to_um, beams
 
@@ -86,8 +83,10 @@ def smooth_images(target_resolution, globs=["destripe*P[LMS]W*fits",
                     print("Skipping {0}".format(fn))
                 continue
         
-        smhdu = smooth_image(fn, smoutfn, target_resolution, verbose=verbose,
-                             clobber=clobber, **kwargs)[0]
+        smhduL = smooth_image_toresolution(fn, smoutfn, target_resolution,
+                                           verbose=verbose, clobber=clobber,
+                                           **kwargs)
+        smhdu = smhduL[0]
 
         if regrid:
             if target_header is None:
@@ -101,10 +100,29 @@ def smooth_images(target_resolution, globs=["destripe*P[LMS]W*fits",
             newhdu.writeto(rgoutfn, clobber=clobber)
 
 
-def smooth_image(fn, outfn, target_resolution, clobber=False, verbose=True,
-                 write=True):
+def smooth_image_toresolution(fn, outfn, target_resolution, clobber=False,
+                              verbose=True, write=True):
     """
-    Smooth images with known
+    Smooth images with known beam size to a target beam size
+
+    Parameters
+    ----------
+    fn : str
+    outfn : str
+    target_resolution : `~astropy.units.Quantity`
+        A degree-equivalent value that specifies the beam size in the output
+        image
+    verbose : bool
+        Print messages at each step?
+    clobber : bool
+        Overwrite files if they exist?
+    write : bool
+        Write the file to the output filename?
+
+    Returns
+    -------
+    f : `~astropy.io.fits.PrimaryHDU`
+        The smoothed FITS image with appropriately updated BMAJ/BMIN
     """
 
     f = fits.open(fn)
@@ -140,8 +158,8 @@ def smooth_image(fn, outfn, target_resolution, clobber=False, verbose=True,
 
     f[0].data = sm
     comment = "Smoothed with {0:03f}\" kernel".format(kernelsize.to(u.arcsec).value)
-    f[0].header['BMAJ'] = (45/3600., comment)
-    f[0].header['BMIN'] = (45/3600., comment)
+    f[0].header['BMAJ'] = (target_resolution.to(u.deg).value, comment)
+    f[0].header['BMIN'] = (target_resolution.to(u.deg).value, comment)
 
     if write:
         f.writeto(outfn, clobber=clobber)
@@ -156,11 +174,22 @@ def add_beam_information_to_higal_header(fn, clobber=True):
     The beams are assumed to be symmetric using the larger of the two beam axes
     given in Traficante et al 2011.  This is not a valid assumption in general,
     but without knowing the scan position angle you can't really do better.
+
+    Parameters
+    ----------
+    fn : str
+        A filename corresponding to a Hi-Gal FITS file.  MUST have one of the
+        standard HiGal strings in the name: blue, red, PSW, PMW, or PLW
+    clobber : bool
+        Overwrite existing file?  (has to be "True" to work!)
     """
 
     f = fits.open(fn)
 
-    wl_name = [x for x in name_to_um if x in fn][0]
+    wl_names = [x for x in name_to_um if x in fn]
+    if len(wl_names) != 1:
+        raise ValueError("Found too few or too many matches!")
+    wl_name = wl_names[0]
 
     f[0].header.append(fits.Card(keyword='BMAJ',
                                  value=beams[name_to_um[wl_name]].to(u.deg).value,
