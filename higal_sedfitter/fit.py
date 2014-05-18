@@ -60,9 +60,20 @@ class PixelFitter(object):
     def __call__(self, frequency, flux, err):
         """
         Perform the fit and return a tuple of values & errors
+
+        Parameters
+        ----------
+        frequency : `~astropy.units.Quantity`
+            An array of frequencies to be converted to Hz and passed to the
+            fitter
+        flux : `~astropy.units.Quantity`
+            An array of `u.MJy` equivalent flux values
+        err : `~astropy.units.Quantity`
+            An array of `u.MJy` equivalent flux values that specify the errors
+            on flux
         """
         fitter = dust_emissivity.fit_sed.fit_sed_lmfit_hz
-        lm = fitter(frequency.to(u.Hz).value,
+        lm = fitter(frequency.to(u.Hz, u.spectral()).value,
                     flux.to(u.erg/u.cm**2/u.s/u.Hz).value,
                     err=err.to(u.erg/u.cm**2/u.s/u.Hz).value,
                     guesses=self.parameters,
