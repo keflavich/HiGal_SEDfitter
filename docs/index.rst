@@ -7,7 +7,7 @@ this package is here:
 .. toctree::
   :maxdepth: 2
 
-  packagename/index.rst
+  higal_sedfitter/index.rst
 
 .. note:: Do not edit this page - instead, place all documentation for the
-          affiliated package inside ``packagename/``
+          affiliated package inside ``higal_sedfitter/``

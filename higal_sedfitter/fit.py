@@ -137,9 +137,10 @@ def fit_modified_blackbody_tofiles(filename_template,
     name_to_um : dict
         A dictionary identifying the translation between the string that will
         be inserted into the file template and the wavelength.  There are two
-        built in: `higal_beams.name_to_um` and `higal_beams.num_to_um`.
+        built in: `higal_sedfitter.higal_beams.name_to_um` and
+        `higal_sedfitter.higal_beams.num_to_um`.
     kwargs : dict
-        passed to `fit_modified_blackbody_toimagecube`
+        passed to `~higal_sedfitter.fit.fit_modified_blackbody_to_imagecube`
     """
 
     target_files = {name_to_um[x]: filename_template.format(x)
@@ -206,7 +207,7 @@ def fit_modified_blackbody_to_imagecube(image_cube,
     t_hdu,b_hdu,n_hdu : :class:`~astropy.io.fits.HDUList`
         HDUlists incorporating the best-fit values as the
         `~astropy.io.fits.PrimaryHDU` image and the errors
-        as `~astropy.io.fits.ImageHDU`s in the first (ERROR)
+        as `~astropy.io.fits.ImageHDU` s in the first (ERROR)
         extension
     int_hdu : :class:`~astropy.io.fits.PrimaryHDU`
         (optional) An HDU containing an image of the integral
