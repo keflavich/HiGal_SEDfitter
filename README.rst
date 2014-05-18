@@ -2,7 +2,8 @@
 Hi-Gal SED fitter
 =================
 
-Docs to come
+Docs to come.  All the good stuff happens in `fits.py
+<higal_sedfitter/fits.py>` and `smooth.py <higal_sedfitter/smooth.py>`.
 
 
 Requires
