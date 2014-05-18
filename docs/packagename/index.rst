@@ -1,5 +1,15 @@
-Template package
+HiGal SED fitter
 ================
 
-This is the documentation for the affiliated package.
 
+Reference/API
+=============
+
+.. automodapi:: higal_sedfitter
+    :no-inheritance-diagram:
+
+.. automodapi:: higal_sedfitter.smooth
+    :no-inheritance-diagram:
+
+.. automodapi:: higal_sedfitter.fit
+    :no-inheritance-diagram:
