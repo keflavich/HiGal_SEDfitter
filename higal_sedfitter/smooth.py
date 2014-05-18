@@ -21,7 +21,7 @@ FWHM_TO_SIGMA = 1./np.sqrt(8*np.log(2))
 def smooth_images(target_resolution, globs=["destripe*P[LMS]W*fits",
                                             "destripe*blue*fits",
                                             "destripe*red*fits"],
-                  reject_regex='smooth',
+                  reject_regex='smooth|smregrid',
                   verbose=True,
                   skip_existing=True,
                   regrid=True,
@@ -30,6 +30,47 @@ def smooth_images(target_resolution, globs=["destripe*P[LMS]W*fits",
                   clobber=False,
                   **kwargs):
     """
+    Smooth a series of images to the same resolution.  The output files will be
+    of the form ``{inputfilename}_smooth.fits`` and
+    ``{inputfilename}_smregrid.fits``
+
+    Parameters
+    ----------
+    target_resolution : `~astropy.units.Quantity`
+        A degree-equivalent value that specifies the beam size in the output
+        image
+    globs : list
+        A list of strings to pass into `~glob.glob`.  All files found will be
+        smoothed and possibly regridded.
+    reject_regex : str
+        A regular expression to apply to each discovered file to choose whether
+        to reject it.  For example, if you've run this function once, you'll
+        have files named ``file.fits`` and ``file_smooth.fits`` that you don't
+        want to re-smooth and re-regrid.
+    verbose : bool
+        Print messages at each step?
+    skip_existing : bool
+        If the output smooth file is found and this is True, skip and move on
+        to the next
+    regrid : bool
+        Regrid the file?  If True, ``target_header`` is also required
+    regrid_order : int
+        The order of the regridding operation.  Regridding is performed with
+        interpolation, so 0'th order means nearest-neighbor and 1st order means
+        bilinear.
+    clobber : bool
+        Overwrite files if they exist?
+    kwargs : dict
+        Passed to `smooth_image`
+
+    Raises
+    ------
+    ValueError
+        If ``target_header`` is not specified but ``regrid`` is
+
+    Returns
+    -------
+    Nothing.  All output is to disk
     """
 
     for fn in [x for g in globs for x in glob.glob(g)

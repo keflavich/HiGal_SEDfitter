@@ -7,6 +7,7 @@ Docs to come.  All the good stuff happens in `fits.py
 
 
 Requires
+--------
 
  * FITS_tools_
  * lmfit_
@@ -28,7 +29,14 @@ Example
    ...                            pixelfitter=pixelfitter,
    ...                            out_prefix='higalsedfit_70to500_l048_beta1.75',
    ...                            integral=True)
-   
+
+Credits
+-------
+The base packages were written by Adam Ginsburg.  Ke Wang wrote the original
+version of the SED fitter looping routine (``fit_modified_blackbody_tofiles``)
+and performed most of the initial testing.
+
+
 .. _FITS_tools: fits-tools.rtfd.org
 .. _lmfit: lmfit.github.io/lmfit-py/
 .. _dust_emissivity: https://github.com/keflavich/dust_emissivity
