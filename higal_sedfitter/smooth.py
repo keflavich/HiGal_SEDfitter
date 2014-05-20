@@ -11,7 +11,8 @@ from astropy import convolution
 import FITS_tools.header_tools as FITS_header_tools
 from FITS_tools.hcongrid import hcongrid
 
-from higal_beams import name_to_um, beams
+from higal_beams import beams
+import higal_beams
 
 FWHM_TO_SIGMA = 1./np.sqrt(8*np.log(2))
 
@@ -168,7 +169,8 @@ def smooth_image_toresolution(fn, outfn, target_resolution, clobber=False,
 
     return f
 
-def add_beam_information_to_higal_header(fn, clobber=True):
+def add_beam_information_to_higal_header(fn, clobber=True,
+                                         name_to_um=higal_beams.name_to_um):
     """
     Given a Hi-Gal FITS file name, attempt to add beam information to its
     header.
@@ -186,6 +188,11 @@ def add_beam_information_to_higal_header(fn, clobber=True):
         standard HiGal strings in the name: blue, red, PSW, PMW, or PLW
     clobber : bool
         Overwrite existing file?  (has to be "True" to work!)
+    name_to_um : dict
+        A dictionary identifying the translation between the string that will
+        be inserted into the file template and the wavelength.  There are two
+        built in: `higal_sedfitter.higal_beams.name_to_um` and
+        `higal_sedfitter.higal_beams.num_to_um`.
     """
 
     f = fits.open(fn)
