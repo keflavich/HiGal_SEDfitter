@@ -249,14 +249,29 @@ def fit_modified_blackbody_to_imagecube(image_cube,
         nerr[x,y] = errs[2]
 
         if integral:
-            intimg[x,y] = pixelfitter.integral(1*u.cm, 1*u.um)
+            integ = pixelfitter.integral(1*u.cm, 1*u.um)
+            vals = vals + (integ,)
+            intimg[x,y] = integ
 
         pb.update()
 
-        return vals,errs
+        return vals,errs,xy
 
     if ncores > 1:
         result = parallel_map(fitter, zip(okx,oky), numcores=ncores)
+        # need to unpack results now
+        for vals,errs,xy in result:
+            x,y = xy
+            timg[x,y] = vals[0]
+            bimg[x,y] = vals[1]
+            nimg[x,y] = vals[2]
+
+            terr[x,y] = errs[0]
+            berr[x,y] = errs[1]
+            nerr[x,y] = errs[2]
+
+            if integ:
+                intimg[x,y] = vals[3]
     else:
         for xy in zip(okx,oky):
             fitter(xy)

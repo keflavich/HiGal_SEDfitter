@@ -44,17 +44,20 @@ def test_fit_cube():
     for nt,nb in zip([5,50],[5,50]):
 
         wavelengths = ([70,160,250,350,500] * u.um).to(u.GHz, u.spectral())
+        parameters = [(tem,beta)
+                      for tem in np.linspace(15,100,nt)*u.K
+                      for beta in np.linspace(1,2,nb)].reshape(2,nt,nb).T
         imagecube = np.array([modified_blackbody(wavelengths, tem, beta=beta)
                               for tem in np.linspace(15,100,nt)*u.K
-                              for beta in np.linspace(1,2,nb)]).reshape([wavelengths.size,nt,nb])
+                              for beta in np.linspace(1,2,nb)]).reshape([wavelengths.size,nt,nb]).T*u.erg/u.s/u.cm**2/u.Hz
 
         import time
         tt = time.time()
-        fit_modified_blackbody_to_imagecube(imagecube, fits.Header(), ncores=4)
+        result = fit_modified_blackbody_to_imagecube(imagecube.to(u.MJy).value, fits.Header(), ncores=4)
         ptime = (time.time()-tt)
 
         tt = time.time()
-        fit_modified_blackbody_to_imagecube(imagecube, fits.Header(), ncores=1)
+        result = fit_modified_blackbody_to_imagecube(imagecube.to(u.MJy).value, fits.Header(), ncores=1)
         stime = (time.time()-tt)
         print
         print 'nt,nb = %i,%i parallel map in %g secs' % (nt,nb,ptime)
