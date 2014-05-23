@@ -8,7 +8,8 @@ from astropy import units as u
 from astropy.utils.console import ProgressBar
 import dust_emissivity
 
-import higal_beams
+from . import higal_beams
+from .parallel_map import parallel_map
 
 __all__ = ['PixelFitter',
            'fit_modified_blackbody_tofiles',
@@ -233,6 +234,8 @@ def fit_modified_blackbody_to_imagecube(image_cube,
     if integral:
         intimg = np.empty(ok_to_fit.shape)+np.nan
 
+    pb = ProgressBar(okcount)
+
     def fitter(xy):
         x,y = xy
         vals,errs = pixelfitter(frequencies, image_cube[:, x, y]*u.MJy,
@@ -248,16 +251,15 @@ def fit_modified_blackbody_to_imagecube(image_cube,
         if integral:
             intimg[x,y] = pixelfitter.integral(1*u.cm, 1*u.um)
 
+        pb.update()
+
         return vals,errs
 
-    # Parallelized version: currently doesn't work =(
-    #with FITS_tools.cube_regrid._map_context(ncores) as map:
-    #   result = map(fitter, zip(okx,oky))
-
-    pb = ProgressBar(okcount)
-    for xy in zip(okx,oky):
-        pb.update()
-        fitter(xy)
+    if ncores > 1:
+        result = parallel_map(fitter, zip(okx,oky), numcores=ncores)
+    else:
+        for xy in zip(okx,oky):
+            fitter(xy)
 
     t_hdu = fits.HDUList([fits.PrimaryHDU(data=timg, header=outheader),
                           fits.ImageHDU(data=terr, header=outheader, name='ERROR')])
