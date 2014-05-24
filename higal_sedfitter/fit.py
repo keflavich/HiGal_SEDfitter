@@ -270,7 +270,7 @@ def fit_modified_blackbody_to_imagecube(image_cube,
             berr[x,y] = errs[1]
             nerr[x,y] = errs[2]
 
-            if integ:
+            if integral:
                 intimg[x,y] = vals[3]
     else:
         for xy in zip(okx,oky):
