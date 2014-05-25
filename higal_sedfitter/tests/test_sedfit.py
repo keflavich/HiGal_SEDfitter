@@ -2,7 +2,7 @@ import numpy as np
 from astropy.io import fits
 from astropy import units as u
 from dust_emissivity.blackbody import modified_blackbody
-from higal_sedfitter.fit import fit_modified_blackbody_to_imagecube
+from higal_sedfitter.fit import fit_modified_blackbody_to_imagecube, PixelFitter
 
 def test_bbfit():
     temperatures = [5,10,15,20,25]
@@ -13,10 +13,10 @@ def test_bbfit():
         np.array([160,250,350,500],dtype='float')]
     errlevels = [0.1,0.2,0.05]
 
-    temperature = 20.
+    temperature = 20.*u.K
     beta = 1.75
-    column = 22
-    wavelength = wavelengths[0]
+    column = 1e22*u.cm**-2
+    wavelength = wavelengths[0]*u.um
     errlevel = errlevels[0]
 
     #for temperature,beta,column in itertools.product(temperatures,betas,columns):
@@ -28,13 +28,12 @@ def test_bbfit():
     bguess=beta
     nguess=column
 
-    flux = modified_blackbody_wavelength(wavelength, temperature,
-            beta=beta, wavelength_units='microns', normalize=False, logN=column,
-            logscale=16)
+    flux = modified_blackbody(wavelength.to(u.Hz,u.spectral()), temperature,
+                              beta=beta)
 
-    mp = fit_blackbody(wavelength, flux, err=err,
-            blackbody_function=modified_blackbody_wavelength,
-            logscale=16, guesses=(tguess, bguess, nguess), wavelength_units='microns')
+    p = PixelFitter()
+
+    mp = p(wavelength, flux)
 
 def test_fit_cube():
     """
@@ -44,9 +43,9 @@ def test_fit_cube():
     for nt,nb in zip([5,50],[5,50]):
 
         wavelengths = ([70,160,250,350,500] * u.um).to(u.GHz, u.spectral())
-        parameters = [(tem,beta)
-                      for tem in np.linspace(15,100,nt)*u.K
-                      for beta in np.linspace(1,2,nb)].reshape(2,nt,nb).T
+        #parameters = np.array([(tem,beta)
+        #                       for tem in np.linspace(15,100,nt)*u.K
+        #                       for beta in np.linspace(1,2,nb)]).reshape(2,nt,nb).T
         imagecube = np.array([modified_blackbody(wavelengths, tem, beta=beta)
                               for tem in np.linspace(15,100,nt)*u.K
                               for beta in np.linspace(1,2,nb)]).reshape([wavelengths.size,nt,nb]).T*u.erg/u.s/u.cm**2/u.Hz
@@ -62,3 +61,11 @@ def test_fit_cube():
         print
         print 'nt,nb = %i,%i parallel map in %g secs' % (nt,nb,ptime)
         print 'nt,nb = %i,%i serial map in %g secs' % (nt,nb,stime)
+
+
+"""
+import higal_sedfitter.wrapper
+%timeit -r1 -n1 higal_sedfitter.wrapper.fit_wrapper('002')
+%timeit -r1 -n1 higal_sedfitter.wrapper.fit_wrapper('000')
+%timeit -r1 -n1 higal_sedfitter.wrapper.fit_wrapper('358')
+"""
