@@ -169,8 +169,11 @@ def smooth_image_toresolution(fn, outfn, target_resolution, clobber=False,
 
     return f
 
-def add_beam_information_to_higal_header(fn, clobber=True,
-                                         name_to_um=higal_beams.name_to_um):
+def add_beam_information_to_higal_header(fn, 
+                                         wavelength=None,
+                                         clobber=True,
+                                         name_to_um=higal_beams.name_to_um,
+                                         **kwargs):
     """
     Given a Hi-Gal FITS file name, attempt to add beam information to its
     header.
@@ -197,10 +200,13 @@ def add_beam_information_to_higal_header(fn, clobber=True,
 
     f = fits.open(fn)
 
-    wl_names = [x for x in name_to_um if x in fn]
-    if len(wl_names) != 1:
-        raise ValueError("Found too few or too many matches!")
-    wl_name = wl_names[0]
+    if wavelength is None:
+        wl_names = [x for x in name_to_um if x in fn]
+        if len(wl_names) != 1:
+            raise ValueError("Found too few or too many matches!")
+        wl_name = wl_names[0]
+    else:
+        wl_name = wavelength
 
     f[0].header.append(fits.Card(keyword='BMAJ',
                                  value=beams[name_to_um[wl_name]].to(u.deg).value,
@@ -214,4 +220,4 @@ def add_beam_information_to_higal_header(fn, clobber=True,
                                  value='2011MNRAS.416.2932T',
                                  comment='Source paper for beam'))
 
-    f.writeto(fn, clobber=clobber)
+    f.writeto(fn, clobber=clobber, **kwargs)

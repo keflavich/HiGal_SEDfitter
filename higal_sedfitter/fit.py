@@ -100,6 +100,11 @@ class PixelFitter(object):
         ----------
         fmin, fmax : `~astropy.units.quantity.Quantity`
             Frequency-equivalent start and end points for the integral
+
+        Returns
+        -------
+        The SED integrated in units of 
+        ``bbunit = u.erg/u.s/u.cm**2``
         """
         integrator = dust_emissivity.blackbody.integrate_sed
         return integrator(fmin, fmax,
