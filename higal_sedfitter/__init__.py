@@ -10,5 +10,7 @@ Herschel Hi-Gal fitting routine...
 from ._astropy_init import *
 # ----------------------------------------------------------------------------
 
-import fit
-import smooth
+# For egg_info test builds to pass, put package imports here.
+if not _ASTROPY_SETUP_:
+    import fit
+    import smooth
