@@ -1,0 +1,5 @@
+numpy>=1.6.0
+astropy
+scipy
+fits_tools
+dust_emissivity
