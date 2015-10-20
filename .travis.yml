@@ -88,7 +88,7 @@ install:
     - source activate test
 
     # CORE DEPENDENCIES
-    - if [[ $SETUP_CMD != egg_info ]]; then $CONDA_INSTALL numpy=$NUMPY_VERSION pytest pip Cython jinja2; fi
+    - if [[ $SETUP_CMD != egg_info ]]; then $CONDA_INSTALL numpy=$NUMPY_VERSION pytest pip Cython scipy jinja2; fi
     - if [[ $SETUP_CMD != egg_info ]]; then $PIP_INSTALL pytest-xdist; fi
 
     # ASTROPY
@@ -101,7 +101,7 @@ install:
     # packages. You should leave the `numpy=$NUMPY_VERSION` in the `conda`
     # install since this ensures Numpy does not get automatically upgraded.
     # - if [[ $SETUP_CMD != egg_info ]]; then $CONDA_INSTALL numpy=$NUMPY_VERSION ... ; fi
-    - if [[ $SETUP_CMD != egg_info ]]; then $PIP_INSTALL https://github.com/keflavich/dust_emissivity/archive/master.zip scipy fits_tools; fi
+    - if [[ $SETUP_CMD != egg_info ]]; then $PIP_INSTALL https://github.com/keflavich/dust_emissivity/archive/master.zip fits_tools; fi
 
 
     # DOCUMENTATION DEPENDENCIES
