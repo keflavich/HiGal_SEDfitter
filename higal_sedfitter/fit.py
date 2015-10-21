@@ -47,7 +47,11 @@ class PixelFitter(object):
                    for n,x in zip(('T','beta','N'),
                                   (tguess, bguess, nguess))]
 
-        parameters = lmfit.Parameters(OrderedDict(parlist))
+        parameters = lmfit.Parameters()
+        parameters.update(OrderedDict(parlist))
+        assert parameters.keys()[0] == 'T'
+        assert parameters.keys()[1] == 'beta'
+        assert parameters.keys()[2] == 'N'
 
         parameters['beta'].vary = not bfixed
         parameters['beta'].min = brange[0]

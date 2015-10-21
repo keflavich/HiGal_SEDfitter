@@ -30,10 +30,11 @@ def test_bbfit():
 
     flux = modified_blackbody(wavelength.to(u.Hz,u.spectral()), temperature,
                               beta=beta)
+    err = errlevel*flux.unit
 
     p = PixelFitter()
 
-    mp = p(wavelength, flux)
+    mp = p(wavelength, flux, err)
 
 def test_fit_cube():
     """
@@ -48,16 +49,17 @@ def test_fit_cube():
         #                       for beta in np.linspace(1,2,nb)]).reshape(2,nt,nb).T
         imagecube = np.array([modified_blackbody(wavelengths, tem, beta=beta)
                               for tem in np.linspace(15,100,nt)*u.K
-                              for beta in np.linspace(1,2,nb)]).reshape([wavelengths.size,nt,nb]).T*u.erg/u.s/u.cm**2/u.Hz
+                              for beta in np.linspace(1,2,nb)]).reshape([wavelengths.size,nt,nb])*u.erg/u.s/u.cm**2/u.Hz
 
         import time
+        tt = time.time()
+        result = fit_modified_blackbody_to_imagecube(imagecube.to(u.MJy).value, fits.Header(), ncores=1)
+        stime = (time.time()-tt)
+
         tt = time.time()
         result = fit_modified_blackbody_to_imagecube(imagecube.to(u.MJy).value, fits.Header(), ncores=4)
         ptime = (time.time()-tt)
 
-        tt = time.time()
-        result = fit_modified_blackbody_to_imagecube(imagecube.to(u.MJy).value, fits.Header(), ncores=1)
-        stime = (time.time()-tt)
         print
         print 'nt,nb = %i,%i parallel map in %g secs' % (nt,nb,ptime)
         print 'nt,nb = %i,%i serial map in %g secs' % (nt,nb,stime)
