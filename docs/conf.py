@@ -53,7 +53,7 @@ for mod_name in MOCK_MODULES:
 
 
 # Load all of the global Astropy configuration
-from astropy.sphinx.conf import *
+from astropy_helpers.sphinx.conf import *
 
 # Get configuration information from setup.cfg
 from distutils import config
@@ -159,7 +159,7 @@ man_pages = [('index', project.lower(), project + u' Documentation',
 ## -- Options for the edit_on_github extension ----------------------------------------
 
 if eval(setup_cfg.get('edit_on_github')):
-    extensions += ['astropy.sphinx.ext.edit_on_github']
+    extensions += ['astropy_helpers.sphinx.ext.edit_on_github']
 
     versionmod = __import__(setup_cfg['package_name'] + '.version')
     edit_on_github_project = setup_cfg['github_project']
