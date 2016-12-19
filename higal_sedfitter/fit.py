@@ -170,6 +170,8 @@ def fit_modified_blackbody_tofiles(filename_template,
                            for wl in wavelengths_sorted])
     image_cube[image_cube == bad_value] = np.nan
 
+    # python 3 doesn't share namespace between loops & main code
+    wl = wavelengths_sorted[-1]
     # wl should be defined from above; the headers should (in principle) be
     # identical
     outheader = fits.getheader(target_files[wl])
