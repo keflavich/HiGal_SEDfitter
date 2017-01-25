@@ -181,6 +181,7 @@ def fit_modified_blackbody_to_imagecube(image_cube,
                                         outheader,
                                         wavelengths=[70,160,250,350,500],
                                         error_scaling=0.2,
+                                        error_cube=None,
                                         pixelfitter=None, ncores=4,
                                         clobber=True,
                                         integral=False, out_prefix="",):
@@ -192,11 +193,15 @@ def fit_modified_blackbody_to_imagecube(image_cube,
     Parameters
     ----------
     image_cube : `~numpy.ndarray`
-        A cube constructed from the individual wavelengths of the Herschel image
+        A cube constructed from the individual wavelengths of the Herschel
+        image.  Should have units of MJy (not MJy/sr).
     wavelengths : list
         The wavelengths, in microns, to include in the fit
     error_scaling : float or None
         The amount to scale the input fluxes by to determine the errors
+    error_cube : None or `~numpy.ndarray`
+        Alternative to ``error_scaling``.  A cube of errors the same size as
+        the image_cube.
     pixelfitter : :class:`PixelFitter` or None
         An instance of the :class:`PixelFitter` class to use for the fitting
         (this is how guesses are specified).  If None, will use defaults.
@@ -236,7 +241,7 @@ def fit_modified_blackbody_to_imagecube(image_cube,
         raise ValueError("No valid pixels found.")
     okx,oky = np.where(ok_to_fit)
 
-    frequencies = (wavelengths_sorted*u.um).to(u.Hz, u.spectral())
+    frequencies = u.Quantity(wavelengths_sorted,u.um).to(u.Hz, u.spectral())
 
     timg, bimg, nimg = [np.empty(ok_to_fit.shape)+np.nan for ii in range(3)]
     terr, berr, nerr = [np.empty(ok_to_fit.shape)+np.nan for ii in range(3)]
@@ -247,8 +252,14 @@ def fit_modified_blackbody_to_imagecube(image_cube,
 
     def fitter(xy):
         x,y = xy
-        vals,errs = pixelfitter(frequencies, image_cube[:, x, y]*u.MJy,
-                                image_cube[:,x,y]*error_scaling*u.MJy)
+        if error_cube is not None:
+            error_spec = error_cube[:,x,y]
+        else:
+            error_spec = image_cube[:,x,y]*error_scaling
+        vals,errs = pixelfitter(frequencies,
+                                u.Quantity(image_cube[:, x, y], u.MJy),
+                                u.Quantity(error_spec, u.MJy),
+                               )
         timg[x,y] = vals[0]
         bimg[x,y] = vals[1]
         nimg[x,y] = vals[2]
